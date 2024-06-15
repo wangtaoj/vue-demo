@@ -24,6 +24,7 @@ import HelloWorld from './components/HelloWorld.vue';
           <router-link to="/">Home</router-link>
           <router-link to="/about">About</router-link>
           <router-link to="/count">Count</router-link>
+          <router-link to="/http">Http</router-link>
         </nav>
       </div>
     </header>
