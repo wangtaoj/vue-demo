@@ -5,7 +5,6 @@ const instance = axios.create({
   baseURL: '/api',
   timeout: 30000,
   responseType: 'json',
-  withCredentials: true,
   validateStatus: function (status) {
     return status >= 200 && status < 300;
   },
@@ -57,11 +56,9 @@ instance.interceptors.response.use(
         message: '错误提示',
         description: errMsg
       });
-    } else {
-      // 交给用户去处理
-      // 返回一个reject状态的promise, 否则调用时结果是在then而不是catch中
-      return Promise.reject(errRes);
     }
+    // 返回一个reject状态的promise, 否则调用时结果是在then而不是catch中
+    return Promise.reject(errRes);
   }
 );
 
