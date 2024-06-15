@@ -25,8 +25,17 @@ instance.interceptors.request.use(
 );
 */
 
+/*
+ * 服务端响应体格式
+ * {code: 'xxx', data: {}, msg: 'xxxx'}
+ */
 instance.interceptors.response.use(
   (rsp) => {
+    // 下载时返回原始对象(包含响应头)
+    if (['blob', 'arraybuffer'].includes(rsp.config.responseType)) {
+      return rsp;
+    }
+    // 仅返回服务器响应体
     return rsp.data;
   },
   (err) => {
@@ -34,8 +43,15 @@ instance.interceptors.response.use(
     let errRes = {};
     // 服务端响应了请求
     if (err.response) {
-      errMsg = err.response.data.msg;
-      errRes = err.response.data;
+      // 服务端响应体
+      const data = err.response.data;
+      // 下载, 此时data是一个blob类型
+      if (['blob'].includes(err.config.responseType)) {
+        return handerErrorForBlob(data, err.config);
+      } else {
+        errMsg = data.msg;
+        errRes = data;
+      }
     } else if (err.request) {
       // 请求已发送, 但是没有收到服务端的响应
       // 超时处理
@@ -61,5 +77,27 @@ instance.interceptors.response.use(
     return Promise.reject(errRes);
   }
 );
+
+function handerErrorForBlob(data, config) {
+  if (config.simpleHandleError) {
+    // blob转json
+    blobToJson(data).then((jsonBody) => {
+      notification.error({
+        message: '错误提示',
+        description: jsonBody.msg
+      });
+    });
+  }
+  // 返回一个reject状态的promise
+  return blobToJson(data).then((jsonBody) => {
+    return Promise.reject(jsonBody);
+  });
+}
+
+function blobToJson(blob) {
+  return blob.text().then((text) => {
+    return JSON.parse(text);
+  });
+}
 
 export default instance;

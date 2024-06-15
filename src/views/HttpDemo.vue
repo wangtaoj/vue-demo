@@ -35,6 +35,13 @@
       >
         超时
       </a-button>
+      <a-button
+        type="primary"
+        style="margin-right: 10px"
+        @click="handleDownload"
+      >
+        下载
+      </a-button>
     </div>
     <div>
       {{ resultStr }}
@@ -112,6 +119,11 @@ export default {
       http.postFormData('/timeout', reqBody, { timeout: 2000 }).then((res) => {
         this.result = res;
       });
+    },
+    handleDownload() {
+      // 后端根据此参数判断是否抛异常
+      const reqBody = false;
+      http.download('/download', reqBody);
     }
   }
 };
