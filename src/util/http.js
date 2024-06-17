@@ -1,61 +1,78 @@
 import axiosInstance from './request';
-import qs from 'qs';
+
+const APPLICATION_FORM_URLENCODED = 'application/x-www-form-urlencoded';
+const APPLICATION_JSON = 'application/json';
 
 function isNullOrUndefined(obj) {
   return obj == null || obj == undefined;
 }
 
 function get(url, params, options) {
-  let finalOptions = {
+  let config = {
     method: 'get',
     url
   };
   if (params) {
-    finalOptions.params = params;
+    config.params = params;
   }
   if (options) {
-    finalOptions = { ...options, ...finalOptions };
+    config = { ...options, ...config };
   }
-  return axiosInstance.request(finalOptions);
+  return axiosInstance.request(config);
 }
 
+/**
+ * 发送post请求, content-type=application/json(默认)
+ * @param {*} url 请求路径
+ * @param {*} data 请求体
+ * @param {*} options 请求配置
+ */
 function post(url, data, options) {
-  let finalOptions = {
+  let config = {
     method: 'post',
     url,
-    headers: { 'Content-Type': 'application/json' }
+    headers: {
+      'Content-Type': APPLICATION_JSON
+    }
   };
+  // 避免参数为false情况被忽略掉
   if (!isNullOrUndefined(data)) {
-    finalOptions.data = data;
+    config.data = data;
   }
   if (options) {
-    if (options.headers) {
-      // 处理请求头
-      finalOptions.headers = { ...options.headers, ...finalOptions.headers };
-    }
-    finalOptions = { ...options, ...finalOptions };
+    config = { ...config, ...options };
   }
-  return axiosInstance.request(finalOptions);
+  // 添加请求头
+  if (config.headers) {
+    // 无Content-Type头, 默认为pplication/json
+    if (!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = APPLICATION_JSON;
+    }
+  } else {
+    config.headers = { 'Content-Type': APPLICATION_FORM_URLENCODED };
+  }
+  return axiosInstance.request(config);
 }
 
+/**
+ * 发送post请求, content-type为application/x-www-form-urlencoded
+ * axios会自动对请求体序列化
+ * @param {*} url 请求路径
+ * @param {*} data 请求体
+ * @param {*} options 请求配置
+ */
 function postFormData(url, data, options) {
-  let finalOptions = {
-    method: 'post',
-    url,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  };
-  if (!isNullOrUndefined(data)) {
-    // 将对象序列化成key1=value1&key2=value2
-    finalOptions.data = qs.stringify(data);
-  }
+  let config = {};
   if (options) {
-    if (options.headers) {
-      // 处理请求头
-      finalOptions.headers = { ...options.headers, ...finalOptions.headers };
-    }
-    finalOptions = { ...options, ...finalOptions };
+    config = { ...config, ...options };
   }
-  return axiosInstance.request(finalOptions);
+  // 添加请求头
+  if (config.headers) {
+    config.headers['Content-Type'] = APPLICATION_FORM_URLENCODED;
+  } else {
+    config.headers = { 'Content-Type': APPLICATION_FORM_URLENCODED };
+  }
+  return post(url, data, config);
 }
 /**
  * 下载
@@ -65,36 +82,13 @@ function postFormData(url, data, options) {
  * @param {*} options 请求配置
  */
 function download(url, data, filename, options) {
-  let finalOptions = {
-    method: 'post',
-    url,
-    responseType: 'blob',
-    headers: { 'Content-Type': 'application/json' }
+  let config = {
+    responseType: 'blob'
   };
-  let jsonReqBody = true;
   if (options) {
-    if (options.headers) {
-      if (
-        options.headers['Content-Type'] === 'application/x-www-form-urlencoded'
-      ) {
-        finalOptions.headers['Content-Type'] =
-          'application/x-www-form-urlencoded';
-        jsonReqBody = false;
-      }
-      // 处理请求头
-      finalOptions.headers = { ...options.headers, ...finalOptions.headers };
-    }
-    finalOptions = { ...options, ...finalOptions };
+    config = { ...config, ...options };
   }
-  if (!isNullOrUndefined(data)) {
-    if (!jsonReqBody) {
-      // 将对象序列化成key1=value1&key2=value2
-      finalOptions.data = qs.stringify(data);
-    } else {
-      finalOptions.data = data;
-    }
-  }
-  return axiosInstance.request(finalOptions).then((rsp) => {
+  return post(url, data, config).then((rsp) => {
     let data = rsp.data;
     let url = URL.createObjectURL(new Blob([data]));
     let a = document.createElement('a');
