@@ -4,7 +4,7 @@ const APPLICATION_FORM_URLENCODED = 'application/x-www-form-urlencoded';
 const APPLICATION_JSON = 'application/json';
 
 function isNullOrUndefined(obj) {
-  return obj == null || obj == undefined;
+  return obj === null || obj === undefined;
 }
 
 function get(url, params, options) {
@@ -30,10 +30,7 @@ function get(url, params, options) {
 function post(url, data, options) {
   let config = {
     method: 'post',
-    url,
-    headers: {
-      'Content-Type': APPLICATION_JSON
-    }
+    url
   };
   // 避免参数为false情况被忽略掉
   if (!isNullOrUndefined(data)) {
@@ -49,7 +46,7 @@ function post(url, data, options) {
       config.headers['Content-Type'] = APPLICATION_JSON;
     }
   } else {
-    config.headers = { 'Content-Type': APPLICATION_FORM_URLENCODED };
+    config.headers = { 'Content-Type': APPLICATION_JSON };
   }
   return axiosInstance.request(config);
 }
