@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import Counter from '@/views/Counter.vue';
 import HttpDemo from '@/views/HttpDemo.vue';
+import BindView from '@/views/BindView.vue';
 
 Vue.use(VueRouter);
 
@@ -32,6 +33,11 @@ const router = new VueRouter({
       path: '/http',
       name: 'http',
       component: HttpDemo
+    },
+    {
+      path: '/bind',
+      name: 'bind',
+      component: BindView
     }
   ]
 });
