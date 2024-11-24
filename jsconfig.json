@@ -6,10 +6,8 @@
       "@/*": ["src/*"]
     },
     // 解决prettier对于装饰器语法的警告
-    "experimentalDecorators": true,
-    // 解决.jsx文件无法快速跳转的问题
-    "jsx": "preserve"
+    "experimentalDecorators": true
   },
-  //提高 IDE 性能
-  "exclude": ["node_modules", "dist", "build"]
+  // 提高 IDE 性能
+  "exclude": ["node_modules", "dist"]
 }
