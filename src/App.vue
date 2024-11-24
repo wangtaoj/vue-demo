@@ -26,6 +26,7 @@ import HelloWorld from './components/HelloWorld.vue';
           <router-link to="/count">Count</router-link>
           <router-link to="/http">Http</router-link>
           <router-link to="/bind">Bind Test</router-link>
+          <router-link to="/routeReCreate">RouteReCreate</router-link>
         </nav>
       </div>
     </header>

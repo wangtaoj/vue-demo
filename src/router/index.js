@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue';
 import Counter from '@/views/Counter.vue';
 import HttpDemo from '@/views/HttpDemo.vue';
 import BindView from '@/views/BindView.vue';
+import RouteReCreate from '@/views/RouteReCreate.vue';
 
 Vue.use(VueRouter);
 
@@ -38,6 +39,11 @@ const router = new VueRouter({
       path: '/bind',
       name: 'bind',
       component: BindView
+    },
+    {
+      path: '/routeReCreate',
+      name: 'routeReCreate',
+      component: RouteReCreate
     }
   ]
 });
