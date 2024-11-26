@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   // 单引号
   singleQuote: true,
   // 去掉尾随逗号
