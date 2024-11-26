@@ -11,8 +11,7 @@ export default defineConfig({
     vue2(),
     vue2Jsx(),
     legacy({
-      targets: ['ie >= 11'],
-      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+      targets: ['defaults', 'not IE 11']
     })
   ],
   resolve: {
