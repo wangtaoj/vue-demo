@@ -14,6 +14,19 @@ export default [
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**']
   },
 
+  {
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: {
+          // 开启jsx解析, 否则eslint碰到jsx语法会报错
+          jsx: true
+        }
+      }
+    }
+  },
+
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   /*
@@ -21,5 +34,11 @@ export default [
    * 2. 将prettier作为eslint的规则运行, 当代码格式与pretter设置的规则不一致时, eslint可以报告代码格式问题
    * 注: 如果不想要第二条, 可以使用@vue/eslint-config-prettier/skip-formatting插件
    */
-  prettierConfig
+  prettierConfig,
+  {
+    rules: {
+      // 关闭Vue组件名必须要有多个单词的校验
+      'vue/multi-word-component-names': 'off'
+    }
+  }
 ];
