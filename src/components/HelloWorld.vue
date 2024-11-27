@@ -10,7 +10,6 @@ export default {
     click() {
       console.log(this.$slots);
       console.log(this.$slots.test);
-      console.log(this.$scopedSlots);
     }
   }
 };
